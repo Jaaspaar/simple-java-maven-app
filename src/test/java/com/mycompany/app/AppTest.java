@@ -2,6 +2,8 @@ package com.mycompany.app;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Random;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.After;
@@ -38,6 +40,14 @@ public class AppTest
         } catch (AssertionError e) {
             fail("\"message\" is not \"Hello World!\"");
         }
+    }
+
+    @Test
+    public void testWithInstability()
+    {
+        App.main(null);
+        final int randomNumber = (new Random()).nextInt(2);
+        assertEquals(1, randomNumber);
     }
 
     @After
