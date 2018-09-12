@@ -42,14 +42,6 @@ public class AppTest
         }
     }
 
-    @Test
-    public void testWithInstability()
-    {
-        App.main(null);
-        final int randomNumber = (new Random()).nextInt(2);
-        assertEquals(1, randomNumber);
-    }
-
     @After
     public void cleanUpStreams() {
         System.setOut(null);
