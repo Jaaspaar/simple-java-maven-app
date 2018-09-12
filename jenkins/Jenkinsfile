@@ -28,6 +28,7 @@ pipeline {
         }
 		stage('Sonar') {
 			steps {
+				sh 'mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false'
 				sh 'mvn sonar:sonar \
 					-Dsonar.host.url=https://fb2c8aa3.ngrok.io \
 					-Dsonar.login=e1989d283b8d20cd63f95a1c75a41f36e084f149'
