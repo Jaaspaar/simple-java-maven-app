@@ -34,5 +34,12 @@ pipeline {
 					-Dsonar.login=e1989d283b8d20cd63f95a1c75a41f36e084f149'
 			}
 		}
+		stage('Quality Gates') {
+			steps {
+				timeout(time: 5, unit: 'MINUTES') {
+					waitForQualityGate abortPipeline: true
+				}
+			}
+		}
     }
 }
