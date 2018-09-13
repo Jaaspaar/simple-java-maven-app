@@ -48,10 +48,9 @@ pipeline {
     }
 	post {
 		always  {
-			emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test', to: 'abc';
+			emailext body: '$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS: \nCheck console output at $BUILD_URL to view the results.',
+			recipientProviders: ['recipients', 'requestor', 'culprits'],
+			subject: '$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!';
 		}
-		failure {
-            emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test', to: 'abc';
-        }
 	}
 }
