@@ -21,15 +21,15 @@ pipeline {
 				sh 'printenv'
 			}
 		} */
-		stage('Paraller maven stages') {
-	        agent {
-                docker {
-                    image 'maven:3-alpine'
-                    args '-v /root/.m2:/root/.m2'
-                }
-            }
+		stage('Paraller stages') {
 			parallel {
 				stage('Test') {
+					agent {
+						docker {
+							image 'maven:3-alpine'
+							args '-v /root/.m2:/root/.m2'
+						}
+					}
 					steps {
 						sh 'mvn test'
 					}
@@ -40,6 +40,12 @@ pipeline {
 					}
 				}
 				stage('Sonar') {
+					agent {
+						docker {
+							image 'maven:3-alpine'
+							args '-v /root/.m2:/root/.m2'
+						}
+					}
 					steps {
 						withSonarQubeEnv('SonarQube on my laptop') {
 							sh 'mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false'
