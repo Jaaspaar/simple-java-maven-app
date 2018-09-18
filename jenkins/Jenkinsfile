@@ -34,27 +34,29 @@ pipeline {
                         sh 'mvn -B -DskipTests clean package'
                     }
                 }
-				parallel {
-					stage('Test') {
-						steps {
-							sh 'mvn test'
-						}
-						post {
-							always {
-								junit 'target/surefire-reports/*.xml'
+				stage('Paraller stages') {
+					parallel {
+						stage('Test') {
+							steps {
+								sh 'mvn test'
+							}
+							post {
+								always {
+									junit 'target/surefire-reports/*.xml'
+								}
 							}
 						}
-					}
-					stage('Sonar') {
-						steps {
-							withSonarQubeEnv('SonarQube on my laptop') {
-								sh 'mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false'
-								sh 'mvn sonar:sonar'
+						stage('Sonar') {
+							steps {
+								withSonarQubeEnv('SonarQube on my laptop') {
+									sh 'mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false'
+									sh 'mvn sonar:sonar'
+								}
+				/* 				sh 'mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false'
+								sh 'mvn sonar:sonar \
+									-Dsonar.host.url=https://c70ab213.ngrok.io \
+									-Dsonar.login=e1989d283b8d20cd63f95a1c75a41f36e084f149' */
 							}
-			/* 				sh 'mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false'
-							sh 'mvn sonar:sonar \
-								-Dsonar.host.url=https://c70ab213.ngrok.io \
-								-Dsonar.login=e1989d283b8d20cd63f95a1c75a41f36e084f149' */
 						}
 					}
 				}
