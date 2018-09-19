@@ -66,8 +66,10 @@ pipeline {
                 }
 				stage('Artifactory') {
 					steps {
-						RT_MAVEN.deployer server: SERVER, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
-						RT_MAVEN.run pom: 'maven-example/pom.xml', goals: 'clean package'
+						script {
+							RT_MAVEN.deployer server: SERVER, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
+							RT_MAVEN.run pom: 'maven-example/pom.xml', goals: 'clean package'
+						}
 					}
 				}
 				stage('Quality Gates') {
