@@ -34,4 +34,11 @@
       </plugin>
     </plugins>
   </build>
+  <distributionManagement>
+    <repository>
+        <id>central</id>
+        <name>17a8698c0b7d-releases</name>
+        <url>https://6f950ee3.ngrok.io/artifactory/libs-release-local</url>
+    </repository>
+  </distributionManagement>
 </project>
