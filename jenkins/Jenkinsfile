@@ -8,20 +8,7 @@ pipeline {
 		COMMITTER_EMAIL = 'lukasz.otczyk.capgemini@gmail.com'
     }
     stages {
-/* 		stage('Setup') {
-            agent {
-                docker {
-                    image 'samueldebruyn/debian-git'
-                }
-            }
-			steps {
-			    sh "git log -n 1 --format='%an <%ae>'"
-				echo "${env.CHANGE_AUTHOR} ${env.CHANGE_AUTHOR_DISPLAY_NAME} ${env.CHANGE_AUTHOR_EMAIL} ${env.BUILD_ID}"
-				echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
-				sh 'printenv'
-			}
-		} */
-		stage('Paraller stages') {
+/* 		stage('Parallel stages') {
 			parallel {
 				stage('Test') {
 					agent {
@@ -51,14 +38,10 @@ pipeline {
 							sh 'mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false'
 							sh 'mvn sonar:sonar'
 						}
-		/* 				sh 'mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false'
-						sh 'mvn sonar:sonar \
-							-Dsonar.host.url=https://c70ab213.ngrok.io \
-							-Dsonar.login=e1989d283b8d20cd63f95a1c75a41f36e084f149' */
 					}
 				}
 			}
-		}
+		} */
 		stage('Maven steps') {
 	        agent {
                 docker {
@@ -66,26 +49,9 @@ pipeline {
                     args '-v /root/.m2:/root/.m2'
                 }
             }
-/* 			parallel {
-				stage('Test') {
-					steps {
-						sh 'mvn test'
-					}
-					post {
-						always {
-							junit 'target/surefire-reports/*.xml'
-						}
-					}
-				}
-				stage('Sonar') {
-					steps {
-						withSonarQubeEnv('SonarQube on my laptop') {
-							sh 'mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false'
-							sh 'mvn sonar:sonar'
-						}
-					}
-				}
-			} */
+			def server = Artifactory.server('artifactory-on-my-laptop')
+			def rtMaven = Artifactory.newMavenBuild()
+			def buildInfo
             stages {
                 stage('Build') {
                     steps {
@@ -97,6 +63,12 @@ pipeline {
                         sh './jenkins/scripts/deliver.sh'
                     }
                 }
+				stage('Artifactory') {
+					steps {
+						rtMaven.deployer server: server, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
+						rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean package'
+					}
+				}
 				stage('Quality Gates') {
 					steps {
 						timeout(time: 5, unit: 'MINUTES') {
