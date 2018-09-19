@@ -8,7 +8,7 @@ pipeline {
 		COMMITTER_EMAIL = 'lukasz.otczyk.capgemini@gmail.com'
     }
     stages {
-/* 		stage('Parallel stages') {
+		stage('Parallel stages') {
 			parallel {
 				stage('Test') {
 					agent {
@@ -41,7 +41,7 @@ pipeline {
 					}
 				}
 			}
-		} */
+		}
 		stage('Maven steps') {
 	        agent {
                 docker {
@@ -62,7 +62,7 @@ pipeline {
                 }
 				stage('Artifactory') {
 					steps {
-						sh 'curl -u admin:ADMIN -X PUT "http://localhost:8081/artifactory/libs-snapshot-local/my/new/artifact/directory/my-app-1.0-SNAPSHOT.jar" -T target/my-app-1.0-SNAPSHOT.jar'
+						sh 'curl -u admin:ADMIN -X PUT "https://6f950ee3.ngrok.io/artifactory/libs-snapshot-local/my/new/artifact/directory/my-app-1.0-SNAPSHOT.jar" -T target/my-app-1.0-SNAPSHOT.jar'
 					}
 				}
 				stage('Quality Gates') {
