@@ -49,10 +49,6 @@ pipeline {
                     args '-v /root/.m2:/root/.m2'
                 }
             }
-			environment {
-				SERVER = Artifactory.server('artifactory-on-my-laptop')
-				RT_MAVEN = Artifactory.newMavenBuild()
-			}
             stages {
                 stage('Build') {
                     steps {
@@ -66,10 +62,7 @@ pipeline {
                 }
 				stage('Artifactory') {
 					steps {
-						script {
-							RT_MAVEN.deployer server: SERVER, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
-							RT_MAVEN.run pom: 'maven-example/pom.xml', goals: 'clean package'
-						}
+						sh 'curl -u admin:ADMIN -X PUT "http://localhost:8081/artifactory/libs-snapshot-local/my/new/artifact/directory/my-app-1.0-SNAPSHOT.jar" -T target/my-app-1.0-SNAPSHOT.jar'
 					}
 				}
 				stage('Quality Gates') {
